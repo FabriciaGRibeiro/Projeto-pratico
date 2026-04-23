@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs kill:*)",
+      "Bash(/dev/null docker-compose:*)",
+      "Bash(docker-compose up:*)"
+    ]
+  }
+}
