@@ -1,0 +1,34 @@
+src/test/java/com/example/Projeto/pratico/service/ValidadorChamadoTest.java
+  5d0787bfe2c366b8 1-78
+build.gradle
+  5d0787bfe2c366b8 46
+src/main/java/com/example/Projeto/pratico/exception/CapacidadeMaximaException.java
+  5d0787bfe2c366b8 1-10
+src/main/java/com/example/Projeto/pratico/repository/ChamadoRepository.java
+  5d0787bfe2c366b8 3,7-8,10-11
+src/main/java/com/example/Projeto/pratico/service/ValidadorChamado.java
+  5d0787bfe2c366b8 2-41
+src/main/java/com/example/Projeto/pratico/exception/GlobalExceptionHandler.java
+  5d0787bfe2c366b8 24-29
+src/main/java/com/example/Projeto/pratico/service/ChamadoService.java
+  5d0787bfe2c366b8 27,96-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "2be803bde376bb42dc867366cb7b61d07858c115",
+  "prompts": {
+    "5d0787bfe2c366b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69c8d28-f111-46d8-968a-7ff941c7c399",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>",
+      "total_additions": 145,
+      "total_deletions": 1,
+      "accepted_lines": 145,
+      "overriden_lines": 0
+    }
+  }
+}
