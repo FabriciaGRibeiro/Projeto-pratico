@@ -24,6 +24,7 @@ public class ChamadoService {
     private final ChamadoRepository chamadoRepository;
     private final BalcaoRepository balcaoRepository;
     private final FilaDeEspera filaDeEspera;
+    private final ValidadorChamado validadorChamado;
 
     public ChamadoResponse criar(ChamadoRequest request) {
         if (balcaoRepository.count() == 0) {
@@ -92,6 +93,8 @@ public class ChamadoService {
 
     // Reutilizado pelo scheduler ao salvar chamados da fila de espera
     public ChamadoResponse salvar(ChamadoRequest request, Balcao balcao) {
+        validadorChamado.validarCapacidade(balcao);
+
         Chamado chamado = Chamado.builder()
                 .customerId(request.customerId())
                 .deviceId(request.deviceId())

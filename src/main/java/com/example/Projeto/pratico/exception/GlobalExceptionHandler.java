@@ -21,6 +21,14 @@ public class GlobalExceptionHandler {
                 .body(Map.of("erro", ex.getMessage()));
     }
 
+    // HTTP 409 — balcão com capacidade máxima atingida
+    @ExceptionHandler(CapacidadeMaximaException.class)
+    public ResponseEntity<Map<String, String>> handleCapacidadeMaxima(CapacidadeMaximaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("erro", ex.getMessage()));
+    }
+
     // HTTP 202 — chamado aceito mas não processado imediatamente (fila de espera).
     // 202 Accepted = "recebemos, vamos processar quando houver espaço."
     @ExceptionHandler(ChamadoEnfileiradoException.class)
