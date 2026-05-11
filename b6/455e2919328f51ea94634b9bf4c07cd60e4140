@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "b6455e2919328f51ea94634b9bf4c07cd60e4140",
+  "prompts": {},
+  "humans": {
+    "h_3315aaee0252c2": {
+      "author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    }
+  }
+}
