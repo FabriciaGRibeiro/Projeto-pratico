@@ -1,0 +1,41 @@
+src/main/java/com/example/Projeto/pratico/enums/StatusChamado.java
+  s_c6c8f01e7534c9::t_644103bcc48b93 3-4
+src/main/java/com/example/Projeto/pratico/scheduler/ProcessamentoChamadoScheduler.java
+  s_c6c8f01e7534c9::t_a9c7f2922d5f9f 4-20
+  s_c6c8f01e7534c9::t_4696f28e8f8f93 57-59
+  s_c6c8f01e7534c9::t_2cca2811eea353 109-126
+README.md
+  s_c6c8f01e7534c9::t_3a22d3d55f44da 97-135
+src/main/java/com/example/Projeto/pratico/service/ValidadorChamado.java
+  s_c6c8f01e7534c9::t_336deb61dfdc69 14
+src/main/java/com/example/Projeto/pratico/dto/ErroResponse.java
+  s_9bab15d99e28f3::t_4c83b9e686131e 1-4
+src/main/java/com/example/Projeto/pratico/exception/GlobalExceptionHandler.java
+  s_9bab15d99e28f3::t_739b5df24f0084 3-4,11,13,22,25,28-47,49,52,55-63,65,68-79,82,84,91
+src/main/java/com/example/Projeto/pratico/dto/ErroValidacaoResponse.java
+  s_9bab15d99e28f3::t_8c3c84333a6c4a 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "4e50d0c2b2b95c9eb2af2810041d321987beba51",
+  "prompts": {},
+  "sessions": {
+    "s_9bab15d99e28f3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1295c509-73c8-4d0d-b4f7-263fbb606a04",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    },
+    "s_c6c8f01e7534c9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ebb448c2-a039-49f6-9406-24d197941dbe",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    }
+  }
+}
