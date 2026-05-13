@@ -9,8 +9,11 @@ import java.time.LocalDateTime;
 
 /**
  * Entidade que representa a tabela tb_chamado no banco de dados.
- * Um chamado é aberto por um cliente (customer_id) para um dispositivo
- * específico e percorre um ciclo de vida definido pelo StatusChamado.
+ *
+ * Timestamps do ciclo de vida:
+ *   dataCriacao          → quando o chamado foi criado (imutável)
+ *   dataInicioAtendimento → quando o job moveu para EM_ATENDIMENTO (base do timer de 2 min)
+ *   dataResolucao        → quando o chamado foi concluído
  */
 @Entity
 @Table(name = "tb_chamado")
@@ -24,58 +27,44 @@ public class Chamado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ID do cliente que abriu o chamado (referência ao usuário/customer)
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
-    // ID do dispositivo com problema
     @Column(name = "device_id")
     private String deviceId;
 
-    // Número de série do dispositivo
     @Column(name = "serial_number")
     private String serialNumber;
 
-    // Descrição do problema relatado pelo cliente
     @Column(nullable = false, length = 500)
     private String motivo;
 
-    // Nome do produto (ex: "Maquininha Point Pro")
     @Column(nullable = false)
     private String produto;
 
-    // -------------------------------------------------------------------------
-    // @Enumerated(EnumType.STRING)
-    // → Salva o NOME do enum no banco (ex: "ABERTO"), não o número (0, 1, 2...)
-    //   Isso é importante! Se você usar ORDINAL (número) e adicionar um novo
-    //   valor no meio do enum, todos os dados ficam errados. STRING é sempre
-    //   mais seguro e legível no banco.
-    // -------------------------------------------------------------------------
+    // @Enumerated(EnumType.STRING) → salva o nome do enum ("ABERTO"), não o índice (0).
+    // Usar índice é perigoso: adicionar um valor no meio do enum corromperia todos os dados.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
     private StatusChamado status = StatusChamado.ABERTO;
 
-    // -------------------------------------------------------------------------
-    // Relacionamento Many-to-One com Balcao
-    //
-    // @ManyToOne  → muitos chamados podem estar em um mesmo balcão
-    // @JoinColumn → define qual coluna é a chave estrangeira (FK) nesta tabela
-    // LAZY        → só carrega os dados do balcão quando necessário
-    //
-    // Diferente de guardar só o balcaoId (Long), aqui temos o objeto completo.
-    // Isso permite acessar chamado.getBalcao().getNomeAtendente() diretamente.
-    // -------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "balcao_id")
     private Balcao balcao;
 
-    // Data em que o chamado foi criado pelo sistema
+    // Preenchido automaticamente na criação, nunca alterado
     @Column(name = "data_criacao", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
-    // Data em que o chamado foi resolvido — NULL enquanto não concluído
+    // Preenchido pela MaquinaDeEstadosChamado ao transicionar para EM_ATENDIMENTO.
+    // Usado pelo ProcessamentoChamadoScheduler para saber quando os 2 minutos expiraram.
+    @Column(name = "data_inicio_atendimento")
+    private LocalDateTime dataInicioAtendimento;
+
+    // Preenchido pela MaquinaDeEstadosChamado ao transicionar para CONCLUIDO.
+    // NULL enquanto o chamado não estiver concluído.
     @Column(name = "data_resolucao")
     private LocalDateTime dataResolucao;
 

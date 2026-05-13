@@ -94,6 +94,45 @@ A API estará disponível em `http://localhost:8080`.
 
 ---
 
+## Testes
+
+### Unitários (sem banco)
+
+```bash
+./gradlew test --tests "com.example.Projeto.pratico.service.*"
+```
+
+Cobre a máquina de estados (`MaquinaDeEstadosChamadoTest`) e o validador de capacidade (`ValidadorChamadoTest`).
+
+### Todos os testes (requer banco)
+
+**1. Inicie o Docker**
+```bash
+colima start          # se estiver usando Colima no macOS
+```
+
+**2. Suba o banco**
+```bash
+docker compose up -d
+```
+
+**3. Execute os testes**
+```bash
+./gradlew test
+```
+
+**4. Veja o relatório**
+```bash
+open build/reports/tests/test/index.html
+```
+
+**5. Derrube o banco ao terminar**
+```bash
+docker compose down
+```
+
+---
+
 ## Estrutura do projeto
 
 ```
