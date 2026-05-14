@@ -11,7 +11,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ValidadorChamado {
+public class
+ValidadorChamado {
 
     static final int CAPACIDADE_MAXIMA = 5;
 
