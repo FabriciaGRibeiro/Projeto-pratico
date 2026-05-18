@@ -2,6 +2,8 @@ package com.example.Projeto.pratico.repository;
 
 import com.example.Projeto.pratico.enums.StatusChamado;
 import com.example.Projeto.pratico.model.Chamado;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
+
+    // -------------------------------------------------------------------------
+    // Paginação — usadas pelo ChamadoService para listagens
+    // -------------------------------------------------------------------------
+    Page<Chamado> findAll(Pageable pageable);
+
+    Page<Chamado> findByCustomerId(Long customerId, Pageable pageable);
 
     // -------------------------------------------------------------------------
     // Usada pelo ValidadorChamado para checar capacidade do balcão

@@ -1,8 +1,10 @@
 package com.example.Projeto.pratico.service;
 
+import com.example.Projeto.pratico.client.DataVaultClient;
 import com.example.Projeto.pratico.dto.ChamadoRequest;
 import com.example.Projeto.pratico.dto.ChamadoResponse;
 import com.example.Projeto.pratico.dto.ChamadoUpdateRequest;
+import com.example.Projeto.pratico.dto.ClienteInfo;
 import com.example.Projeto.pratico.enums.StatusChamado;
 import com.example.Projeto.pratico.exception.AcessoNegadoException;
 import com.example.Projeto.pratico.exception.ChamadoEnfileiradoException;
@@ -13,9 +15,10 @@ import com.example.Projeto.pratico.model.Chamado;
 import com.example.Projeto.pratico.repository.BalcaoRepository;
 import com.example.Projeto.pratico.repository.ChamadoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ public class ChamadoService {
     private final FilaDeEspera filaDeEspera;
     private final ValidadorChamado validadorChamado;
     private final MaquinaDeEstadosChamado maquinaDeEstados;
+    private final DataVaultClient dataVaultClient;
 
     public ChamadoResponse criar(ChamadoRequest request) {
         // 1. Verifica conflitos por serial_number antes de qualquer outra coisa
@@ -53,11 +57,12 @@ public class ChamadoService {
         return salvar(request, balcaoDisponivel.get());
     }
 
-    public List<ChamadoResponse> listarTodos() {
-        return chamadoRepository.findAll()
-                .stream()
-                .map(ChamadoResponse::from)
-                .toList();
+    public Page<ChamadoResponse> listarTodos(Pageable pageable) {
+        return chamadoRepository.findAll(pageable).map(ChamadoResponse::from);
+    }
+
+    public Page<ChamadoResponse> listarPorCustomerId(Long customerId, Pageable pageable) {
+        return chamadoRepository.findByCustomerId(customerId, pageable).map(ChamadoResponse::from);
     }
 
     public ChamadoResponse buscarPorId(Long id) {
@@ -65,7 +70,8 @@ public class ChamadoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Chamado não encontrado com id: " + id
                 ));
-        return ChamadoResponse.from(chamado);
+        ClienteInfo cliente = dataVaultClient.buscarCliente(chamado.getCustomerId()).orElse(null);
+        return ChamadoResponse.from(chamado, cliente);
     }
 
     public ChamadoResponse atualizar(Long id, ChamadoUpdateRequest request) {

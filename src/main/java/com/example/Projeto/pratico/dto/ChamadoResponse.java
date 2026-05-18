@@ -16,13 +16,18 @@ public record ChamadoResponse(
         BalcaoInfo balcao,
         LocalDateTime dataCriacao,
         LocalDateTime dataResolucao,
-        LocalDateTime criadoEm
+        LocalDateTime criadoEm,
+        ClienteInfo cliente
 ) {
     // Record aninhado — representa apenas os dados do balcão que fazem sentido
     // aparecer dentro da resposta do chamado. Evita expor tudo de Balcao.
     public record BalcaoInfo(Long id, String nomeAtendente) {}
 
     public static ChamadoResponse from(Chamado chamado) {
+        return from(chamado, null);
+    }
+
+    public static ChamadoResponse from(Chamado chamado, ClienteInfo cliente) {
         BalcaoInfo balcaoInfo = null;
         if (chamado.getBalcao() != null) {
             balcaoInfo = new BalcaoInfo(
@@ -42,7 +47,8 @@ public record ChamadoResponse(
                 balcaoInfo,
                 chamado.getDataCriacao(),
                 chamado.getDataResolucao(),
-                chamado.getCriadoEm()
+                chamado.getCriadoEm(),
+                cliente
         );
     }
 }

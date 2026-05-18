@@ -22,28 +22,31 @@ import java.util.Optional;
 /**
  * Job responsável por avançar o ciclo de vida dos chamados.
  *
- * Executa a cada 30 segundos e realiza dois passos na ordem:
+ * Executa a cada 30 segundos seguindo a ordem de estados:
+ * ABERTO → EM_ESPERA → EM_ATENDIMENTO → CONCLUÍDO
  *
- * Passo 1 — ABERTO → EM_ATENDIMENTO
- *   Busca chamados com status ABERTO e os move para EM_ATENDIMENTO.
+ * Passo 1 — EM_ESPERA → EM_ATENDIMENTO
+ *   Processa primeiro os que já estavam esperando de execuções anteriores.
  *   A máquina de estados registra dataInicioAtendimento automaticamente.
+ *   (Executado ANTES do Passo 2 para que chamados recém-movidos para
+ *   EM_ESPERA nessa mesma execução não pulem o estado de espera.)
  *
- * Passo 2 — EM_ATENDIMENTO → CONCLUÍDO (após 2 minutos)
+ * Passo 2 — ABERTO → EM_ESPERA
+ *   Move chamados recém-criados para a fila de espera.
+ *
+ * Passo 3 — EM_ATENDIMENTO → CONCLUÍDO (após 2 minutos)
  *   Busca chamados EM_ATENDIMENTO cujos 2 minutos já expiraram
  *   (dataInicioAtendimento <= agora - 2 min) e os conclui.
  *   A máquina registra dataResolucao automaticamente.
  *
- * Por que o Passo 2 vem depois do Passo 1 e não antes?
- *   Se invertêssemos, um chamado recém-movido para EM_ATENDIMENTO
- *   (dataInicioAtendimento = agora) nunca seria concluído na mesma execução,
- *   mas queremos garantir que um chamado ABERTO não seja concluído antes de
- *   completar os 2 minutos. Essa ordem torna isso impossível.
+ * Passo 4 — Drena a FilaDeEspera em memória
+ *   Processa chamados que ficaram na fila de 3 minutos (todos os balcões
+ *   estavam cheios quando foram criados).
  *
  * Por que @Transactional aqui?
- *   O @Transactional garante que todas as operações desta execução façam
- *   parte de uma única transação. Se qualquer save() falhar, o banco
- *   reverte tudo — evitando estados inconsistentes (ex: status atualizado
- *   mas dataResolucao não gravada).
+ *   Garante que todas as operações façam parte de uma única transação.
+ *   Se qualquer save() falhar, o banco reverte tudo — evitando estados
+ *   inconsistentes (ex: status atualizado mas dataResolucao não gravada).
  */
 @Slf4j
 @Component
@@ -63,17 +66,19 @@ public class ProcessamentoChamadoScheduler {
     public void processarChamados() {
 
         // -----------------------------------------------------------------
-        // Passo 1: ABERTO → EM_ATENDIMENTO
+        // Passo 1: EM_ESPERA → EM_ATENDIMENTO
+        // Processa primeiro os que já estavam esperando (de execuções anteriores).
+        // Isso garante que chamados movidos de ABERTO→EM_ESPERA nesta mesma
+        // execução (Passo 2) não pulem o estado de espera.
         // -----------------------------------------------------------------
-        List<Chamado> chamadosAbertos = chamadoRepository.findByStatus(StatusChamado.ABERTO);
+        List<Chamado> chamadosEmEspera = chamadoRepository.findByStatus(StatusChamado.EM_ESPERA);
 
-        if (!chamadosAbertos.isEmpty()) {
-            log.info("[ProcessamentoChamado] Iniciando atendimento de {} chamado(s) ABERTO(s)",
-                    chamadosAbertos.size());
+        if (!chamadosEmEspera.isEmpty()) {
+            log.info("[ProcessamentoChamado] Iniciando atendimento de {} chamado(s) EM_ESPERA",
+                    chamadosEmEspera.size());
         }
 
-        for (Chamado chamado : chamadosAbertos) {
-            // transicionar() valida a transição e seta dataInicioAtendimento
+        for (Chamado chamado : chamadosEmEspera) {
             maquinaDeEstados.transicionar(chamado, StatusChamado.EM_ATENDIMENTO);
             chamadoRepository.save(chamado);
 
@@ -83,7 +88,24 @@ public class ProcessamentoChamadoScheduler {
         }
 
         // -----------------------------------------------------------------
-        // Passo 2: EM_ATENDIMENTO → CONCLUÍDO (timer de 2 minutos)
+        // Passo 2: ABERTO → EM_ESPERA
+        // -----------------------------------------------------------------
+        List<Chamado> chamadosAbertos = chamadoRepository.findByStatus(StatusChamado.ABERTO);
+
+        if (!chamadosAbertos.isEmpty()) {
+            log.info("[ProcessamentoChamado] Enfileirando {} chamado(s) ABERTO(s) para EM_ESPERA",
+                    chamadosAbertos.size());
+        }
+
+        for (Chamado chamado : chamadosAbertos) {
+            maquinaDeEstados.transicionar(chamado, StatusChamado.EM_ESPERA);
+            chamadoRepository.save(chamado);
+
+            log.info("[ProcessamentoChamado] Chamado #{} → EM_ESPERA", chamado.getId());
+        }
+
+        // -----------------------------------------------------------------
+        // Passo 3: EM_ATENDIMENTO → CONCLUÍDO (timer de 2 minutos)
         // -----------------------------------------------------------------
 
         // "Há quanto tempo iniciou?" → dataInicioAtendimento <= agora - 2 min
@@ -108,7 +130,7 @@ public class ProcessamentoChamadoScheduler {
         }
 
         // -----------------------------------------------------------------
-        // Passo 3: Drena a FilaDeEspera — processa chamados aguardando vaga
+        // Passo 4: Drena a FilaDeEspera — processa chamados aguardando vaga
         // -----------------------------------------------------------------
         ChamadoEmEspera emEspera;
         while ((emEspera = filaDeEspera.poll()) != null) {
