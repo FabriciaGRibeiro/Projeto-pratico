@@ -1,0 +1,43 @@
+src/main/java/com/example/Projeto/pratico/repository/ChamadoRepository.java
+  s_dab93326f9d7ea::t_08d6e1d132c228 5-6
+  s_dab93326f9d7ea::t_11c5219b5ccd78 18-23
+src/main/java/com/example/Projeto/pratico/client/DataVaultClient.java
+  s_dab93326f9d7ea::t_c9c6876647e2f8 1-40
+src/main/java/com/example/Projeto/pratico/scheduler/ProcessamentoChamadoScheduler.java
+  s_dab93326f9d7ea::t_62780f3b5c5cae 25-26,28-29,31-32,34-37,42-44,47-49
+  s_dab93326f9d7ea::t_f14fc047d58a9c 133
+  s_dab93326f9d7ea::t_414b9d94859379 69-72,74,76-78,81,91-108
+src/main/java/com/example/Projeto/pratico/controller/ChamadoController.java
+  s_dab93326f9d7ea::t_b4cbceb3d804e8 9-12
+  s_dab93326f9d7ea::t_2068009cfb15f4 30-33,35-41
+src/test/java/com/example/Projeto/pratico/service/BalcaoServiceTest.java
+  s_dab93326f9d7ea::t_cb9714b57b7bf5 1-159
+src/main/resources/application.properties
+  s_dab93326f9d7ea::t_c34233f68926b8 3-6
+src/main/java/com/example/Projeto/pratico/service/ChamadoService.java
+  s_dab93326f9d7ea::t_9310d3c9f1449b 60-65,73-74
+  s_dab93326f9d7ea::t_f5ccefd3e5d80a 3,7,18-19
+  s_dab93326f9d7ea::t_3a9c1926e9f931 33
+src/main/java/com/example/Projeto/pratico/dto/ChamadoResponse.java
+  s_dab93326f9d7ea::t_83d9c1425b3ee8 19-20,27-30,50-51
+src/main/java/com/example/Projeto/pratico/config/WebConfig.java
+  s_dab93326f9d7ea::t_06d224362a14ba 1-14
+src/main/java/com/example/Projeto/pratico/dto/ClienteInfo.java
+  s_dab93326f9d7ea::t_b4742aa6f9489a 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "1a7d6f37ffdc4e9ed7a588319c9c88324a677199",
+  "prompts": {},
+  "sessions": {
+    "s_dab93326f9d7ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b822e385-2377-4421-9a66-d7c7524437b9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    }
+  }
+}
