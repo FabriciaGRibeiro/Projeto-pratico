@@ -1,0 +1,28 @@
+.claude/settings.local.json
+  s_dab93326f9d7ea::t_544bc3fb55f862 6-9
+  s_b29e44ceea95de::t_70e50569a20b2d 10-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "9fd4b95335b3c4c1c07de60a6e09f55e3af28b6f",
+  "prompts": {},
+  "sessions": {
+    "s_b29e44ceea95de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6f9c12a3-b4e0-4850-8555-af9c18af2160",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    },
+    "s_dab93326f9d7ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b822e385-2377-4421-9a66-d7c7524437b9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Fabricia Graziele Ribeiro <fabriciagribeiro@gmail.com>"
+    }
+  }
+}
