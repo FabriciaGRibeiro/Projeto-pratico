@@ -6,11 +6,13 @@ import com.example.Projeto.pratico.dto.ChamadoUpdateRequest;
 import com.example.Projeto.pratico.service.ChamadoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/chamados")
@@ -25,10 +27,18 @@ public class ChamadoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(chamadoService.criar(request));
     }
 
-    // GET /chamados → 200 OK com lista de todos os chamados
+    // GET /chamados → lista paginada de chamados
+    // Parâmetros opcionais:
+    //   customerId → filtra chamados de um cliente específico
+    //   page, size, sort → paginação padrão do Spring (ex: ?page=0&size=10&sort=dataCriacao,desc)
     @GetMapping
-    public ResponseEntity<List<ChamadoResponse>> listarTodos() {
-        return ResponseEntity.ok(chamadoService.listarTodos());
+    public ResponseEntity<Page<ChamadoResponse>> listarTodos(
+            @RequestParam(required = false) Long customerId,
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (customerId != null) {
+            return ResponseEntity.ok(chamadoService.listarPorCustomerId(customerId, pageable));
+        }
+        return ResponseEntity.ok(chamadoService.listarTodos(pageable));
     }
 
     // GET /chamados/{id} → 200 OK ou 404 se não existir

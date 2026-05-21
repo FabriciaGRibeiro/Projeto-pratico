@@ -3,7 +3,12 @@
     "allow": [
       "Bash(xargs kill:*)",
       "Bash(/dev/null docker-compose:*)",
-      "Bash(docker-compose up:*)"
+      "Bash(docker-compose up:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(./gradlew test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm test:*)"
     ]
   }
 }
